@@ -49,16 +49,16 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: openshift-csr-approver
-subjects:
-  - kind: User
-    name: openshift-csr-approver
-    apiGroup: rbac.authorization.k8s.io
 roleRef:
-  kind: ServiceAccount
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
   name: openshift-csr-approver
+subjects:
+  - kind: ServiceAccount
+    name: openshift-csr-approver
 
-# Replace this with the actual namespace
-  namespace: NAMESPACE
+    # Replace this with the actual namespace
+    namespace: NAMESPACE
 
 ---
 apiVersion: batch/v1beta1
