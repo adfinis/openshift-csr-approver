@@ -1,0 +1,92 @@
+
+# This ConfigMap must be configured before adding the resources to the
+# OpenShift cluster
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openshift-csr-approver
+data:
+  spec.yaml: |
+    FIRST_NODE_NAME:  # Replace by name of the node, as it appears in `oc get node`
+      names:
+        - FIRST_REQUESTED_DNS_NAME   # Replace by all names requested by the node,
+        - SECOND_REQUESTED_DNS_NAME  # e.g. <nodename> and <nodename>.<clusterdomain>
+      ips:
+        - FIRST_REQUESTED_IP_ADDR    # Replace by all IP addresses requested by the node,
+        - SECOND_REQUESTED_IP_ADDR   # e.g. internal and external addresses.
+    SECOND_NODE_NAME:
+      # ... repeat configuration for every node
+    # ... add further nodes here
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: openshift-csr-approver
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: openshift-csr-approver
+  annotations:
+    kubernetes.io/service-account.name: openshift-csr-approver
+type: kubernetes.io/service-account-token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: openshift-csr-approver
+rules:
+  # Grant read and write access to CSRs
+  - apiGroups: ["certificates.k8s.io"]
+    resources: ["certificatesigningrequests"]
+    verbs: ["get", "list", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: openshift-csr-approver
+subjects:
+  - kind: User
+    name: openshift-csr-approver
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ServiceAccount
+  name: openshift-csr-approver
+
+# Replace this with the actual namespace
+  namespace: NAMESPACE
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: openshift-csr-approver
+spec:
+  # Run every half hour
+  schedule: "0,30 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: openshift-csr-approver
+              image: docker.io/adfinissygroup/openshift-csr-approver:latest
+              volumeMounts:
+                - name: service-account
+                  mountPath: /var/run/secrets/service-account
+                  readOnly: true
+                - name: node-csr-spec
+                  mountPath: /var/run/config/node-csr-spec
+                  readOnly: true
+          restartPolicy: OnFailure
+          volumes:
+            - name: service-account
+              secret:
+                secretName: openshift-csr-approver-token
+            - name: node-csr-spec
+              configMap:
+                name: openshift-csr-approver

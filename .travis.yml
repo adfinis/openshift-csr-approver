@@ -1,0 +1,19 @@
+---
+language: python
+cache: pip
+python:
+  - "3.8"
+
+install:
+  - pip install -r requirements.txt
+  - pip install pycodestyle mypy coverage codecov
+
+script:
+  - python -m pycodestyle --config setup.cfg openshift_csr_approver
+  - python -m mypy --config-file setup.cfg -p openshift_csr_approver
+  - python -m coverage run --rcfile setup.cfg -m unittest discover openshift_csr_approver
+  - python -m coverage combine
+  - python -m coverage report --rcfile setup.cfg
+
+after_script:
+  - codecov
