@@ -74,7 +74,7 @@ spec:
         spec:
           containers:
             - name: openshift-csr-approver
-              image: docker.io/adfinissygroup/openshift-csr-approver:latest
+              image: docker.io/adfinissygroup/openshift-csr-approver:0.1
               volumeMounts:
                 - name: service-account
                   mountPath: /var/run/secrets/service-account
