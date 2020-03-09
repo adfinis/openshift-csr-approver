@@ -65,7 +65,8 @@ worker-01:
 
 ### Set Namespace
 
-In the file `deployment.yaml`, you also need to set 
+In the file `deployment.yaml`, you also need to set the ServiceAccount
+namespace in the ClusterRoleBinding resource.
 
 ### Create the Resources
 
