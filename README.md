@@ -1,22 +1,22 @@
 # openshift-csr-approver
 
-[![License](https://img.shields.io/github/license/adfinis-sygroup/openshift-csr-approver.svg?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/github/license/adfinis-sygroup/openshift-csr-approver.svg?style=plastic)](LICENSE)
 [![Build Status](https://travis-ci.com/adfinis-sygroup/openshift-csr-approver.svg?branch=master)](https://travis-ci.com/adfinis-sygroup/openshift-csr-approver)
 [![Test Coverage](https://codecov.io/gh/adfinis-sygroup/openshift-csr-approver/branch/master/graph/badge.svg)](https://codecov.io/gh/adfinis-sygroup/openshift-csr-approver)
 
 **This project is work in progress and may not yet be production
 ready.**
 
-A tool for automatically approving kubelet client CSRs in OpenShift 4
+A tool for automatically approving kubelet CSRs in OpenShift 4
 clusters set up on user-provisioned infrastructure.
 
 When installed on user-provisioned infrastructure, the OpenShift
-`machine-approver` does not automatically approve new kubelet client
-CSRs.  On installer-provisioned infrastructure, the information from
-`Machine` resources is used to decide which kubelet client CSRs to
-approve and which to deny.  On user-provisioned infrastructure, this
-information is not available.  Instead, this tool relies on
-information provided by the user in form of a ConfigMap resource.
+`machine-approver` does not automatically approve new kubelet CSRs.
+On installer-provisioned infrastructure, the information from
+`Machine` resources is used to decide which CSRs to approve and which
+to deny.  On user-provisioned infrastructure, this information is not
+available.  Instead, this tool relies on information provided by the
+user in form of a ConfigMap resource.
 
 The tool is installed as a Kubernetes `Cronjob` resource which starts
 the CSR approval process every half hour.

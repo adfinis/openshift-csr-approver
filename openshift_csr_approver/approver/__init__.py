@@ -239,7 +239,7 @@ def parse_arguments(args: List[str]) -> argparse.Namespace:
         description='Auto-approve allowed cluster node CSRs')
     parser.add_argument('--api-endpoint', metavar='endpoint',
                         type=str, action='store', dest='endpoint',
-                        default='https://kubernetes',
+                        default='https://kubernetes.default',
                         help='Base URL of the kubernetes API, e.g. https://api.openshift.example.com')  # noqa E501
     parser.add_argument('--config-file', metavar='/path/to/cm/mount/spec.yaml',
                         type=str, action='store', dest='cm_path',
