@@ -43,7 +43,7 @@ rules:
   # Grant read access to CSRs
   - apiGroups: ["certificates.k8s.io"]
     resources: ["certificatesigningrequests"]
-    verbs: ["get", "list"]
+    verbs: ["get", "list", "patch"]
   # Grant write access to CSR approval
   - apiGroups: ["certificates.k8s.io"]
     resources: ["certificatesigningrequests/approval"]
