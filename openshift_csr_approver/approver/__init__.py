@@ -46,7 +46,8 @@ def create_approval_patch(csr: k8s.V1beta1CertificateSigningRequest,
         type='Approved',
         reason='openshift-csr-approver',
         message=message,
-        last_update_time=date.isoformat('seconds')
+        # Ugly "+ Z" hack to make the kubernetes API accept the UTC timestamp
+        last_update_time=date.isoformat(timespec='seconds') + 'Z'
     )
     if csr.status.conditions is None:
         csr.status.conditions = []
@@ -194,7 +195,7 @@ def check_approve_csr(csr: k8s.V1beta1CertificateSigningRequest,
         f'{x[0].decode()} = {x[1].decode()}'
         for x in subject.get_components()
     ])
-    return True, f'Approving CSR for subject {prettyname}'
+    return True, f'Marking CSR for approval: {prettyname}'
 
 
 def iterate_csrs(csrs: k8s.V1beta1CertificateSigningRequestList,
@@ -225,13 +226,16 @@ def run_csr_approval(client: k8s.ApiClient,
     api = k8s.CertificatesV1beta1Api(client)
     csrs: k8s.V1beta1CertificateSigningRequestList \
         = api.list_certificate_signing_request()
-    now = datetime.now()
-    csrs_to_approve = iterate_csrs(api, node_csr_spec)
+    now = datetime.utcnow()
+    csrs_to_approve = iterate_csrs(csrs, node_csr_spec)
     for csr in csrs_to_approve:
-        create_approval_patch(csr, now)
-        api.replace_certificate_signing_request_approval(
-            csr.metadata.name, body=csr)
-        api.patch_certificate_signing_request(csr.metadata.name, csr)
+        try:
+            create_approval_patch(csr, now)
+            api.replace_certificate_signing_request_approval(
+                csr.metadata.name, body=csr)
+        except BaseException as e:
+            # Log, but don't quit -> continue processing other CSRs
+            logger.error(e, exc_info=True)
 
 
 def parse_arguments(args: List[str]) -> argparse.Namespace:

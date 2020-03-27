@@ -4,9 +4,6 @@
 [![Build Status](https://travis-ci.com/adfinis-sygroup/openshift-csr-approver.svg?branch=master)](https://travis-ci.com/adfinis-sygroup/openshift-csr-approver)
 [![Test Coverage](https://codecov.io/gh/adfinis-sygroup/openshift-csr-approver/branch/master/graph/badge.svg)](https://codecov.io/gh/adfinis-sygroup/openshift-csr-approver)
 
-**This project is work in progress and may not yet be production
-ready.**
-
 A tool for automatically approving kubelet CSRs in OpenShift 4
 clusters set up on user-provisioned infrastructure.
 

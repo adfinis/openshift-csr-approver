@@ -14,7 +14,7 @@ setup(
     url='https://github.com/adfinis-sygroup/openshift-csr-approver',
     packages=find_packages(exclude=['*.test']),
     long_description='',
-    python_requires='>=3.8',
+    python_requires='>=3.6',
     install_requires=[
         'pyyaml==5.3',
         'kubernetes==10.0.1',
