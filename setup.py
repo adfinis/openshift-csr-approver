@@ -16,7 +16,7 @@ setup(
     long_description='',
     python_requires='>=3.6',
     install_requires=[
-        'pyyaml==5.3',
+        'pyyaml==5.4',
         'kubernetes==10.0.1',
         'pyopenssl==19.1.0'
     ],
