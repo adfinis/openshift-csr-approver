@@ -48,6 +48,10 @@ rules:
   - apiGroups: ["certificates.k8s.io"]
     resources: ["certificatesigningrequests/approval"]
     verbs: ["update"]
+  - apiGroups: ["certificates.k8s.io"]
+    resources: ["signers"]
+    verbs: ["approve"]
+    resourceNames: ["kubernetes.io/kubelet-serving"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
